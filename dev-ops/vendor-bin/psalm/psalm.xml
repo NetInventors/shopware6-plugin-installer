@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<psalm
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="https://getpsalm.org/schema/config"
+    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+    resolveFromConfigFile="true"
+    errorLevel="1"
+    errorBaseline="./psalm-baseline.xml"
+    findUnusedBaselineEntry="0"
+    findUnusedCode="0"
+>
+    <projectFiles>
+        <directory name="../../../src/" />
+
+        <ignoreFiles allowMissingFiles="true">
+            <directory name="../../../vendor/" />
+        </ignoreFiles>
+    </projectFiles>
+
+    <issueHandlers>
+        <MissingClassConstType errorLevel="suppress" />
+
+        <InternalClass>
+            <errorLevel type="suppress">
+                <referencedClass name="Shopware\Core\Defaults" />
+            </errorLevel>
+        </InternalClass>
+    </issueHandlers>
+
+    <plugins>
+        <pluginClass class="DQ5Studios\PsalmJunit\Plugin">
+            <filepath>./junit.xml</filepath>
+        </pluginClass>
+    </plugins>
+</psalm>

@@ -1,0 +1,51 @@
+{
+  "name": "netinventors/shopware6-plugin-installer",
+  "description": "Shopware 6 plugin installer",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Net Inventors GmbH",
+      "homepage": "https://www.netinventors.de",
+      "role": "Manufacturer"
+    }
+  ],
+  "config": {
+    "allow-plugins": {
+      "bamarni/composer-bin-plugin": true,
+      "symfony/runtime": true
+    }
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": false,
+  "require": {
+    "php": ">=8.2",
+    "doctrine/dbal": "^3.7",
+    "shopware/core": ">=6.6.0.0 <6.7.0.0",
+    "symfony/dependency-injection": "7.*",
+    "symfony/filesystem": "7.*",
+    "symfony/finder": "7.*"
+  },
+  "require-dev": {
+    "bamarni/composer-bin-plugin": "^1.8"
+  },
+  "extra": {
+    "bamarni-bin": {
+      "bin-links": false,
+      "forward-command": true,
+      "target-directory": "dev-ops/vendor-bin"
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "NetInventors\\Shopware6PluginInstaller\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "NetInventors\\Shopware6PluginInstaller\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "bin": "echo 'bin not installed'"
+  }
+}
