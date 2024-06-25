@@ -82,5 +82,10 @@ class ExamplePlugin extends Plugin
 
         $pluginUninstaller->uninstall($uninstallContext);
     }
+
+    public function executeComposerCommands(): bool
+    {
+        return true;
+    }
 }
 ```
