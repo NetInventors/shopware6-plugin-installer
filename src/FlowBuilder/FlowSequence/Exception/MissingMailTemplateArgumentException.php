@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace NetInventors\Shopware6PluginInstaller\FlowBuilder\FlowSequence\Exception;
 
 use NetInventors\Shopware6PluginInstaller\FlowBuilder\FlowSequence\FlowSequenceInterface;
-use Shopware\Core\Framework\HttpException;
+use Shopware\Core\Framework\Plugin\PluginException;
 use Symfony\Component\HttpFoundation\Response;
 
-class MissingMailTemplateArgumentException extends HttpException
+class MissingMailTemplateArgumentException extends PluginException
 {
     public function __construct(FlowSequenceInterface $flowSequence)
     {
