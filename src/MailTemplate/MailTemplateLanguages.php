@@ -6,14 +6,14 @@ namespace NetInventors\Shopware6PluginInstaller\MailTemplate;
 
 use Shopware\Core\System\Language\LanguageEntity;
 
-readonly class MailTemplateLanguages
+class MailTemplateLanguages
 {
     /**
      * @param list<LanguageEntity> $languages
      */
     public function __construct(
-        public LanguageEntity $default,
-        public array $languages,
+        public readonly LanguageEntity $default,
+        public readonly array $languages,
     ) {
     }
 }

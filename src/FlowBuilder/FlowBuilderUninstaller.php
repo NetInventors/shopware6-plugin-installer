@@ -14,15 +14,15 @@ use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-readonly class FlowBuilderUninstaller implements UninstallerInterface
+class FlowBuilderUninstaller implements UninstallerInterface
 {
-    private EntityRepository $flowRepository;
+    private readonly EntityRepository $flowRepository;
 
-    private FlowEventCollection $flowEventCollection;
+    private readonly FlowEventCollection $flowEventCollection;
 
     public function __construct(
-        private ContainerInterface $container,
-        private string $directory,
+        private readonly ContainerInterface $container,
+        private readonly string $directory,
     ) {
         /** @var EntityRepository $flowRepository */
         $flowRepository = $this->container->get('flow.repository');

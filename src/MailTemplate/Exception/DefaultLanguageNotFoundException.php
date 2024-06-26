@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace NetInventors\Shopware6PluginInstaller\MailTemplate\Exception;
 
-use Shopware\Core\Framework\Plugin\PluginException;
+use Shopware\Core\Framework\HttpException;
 use Symfony\Component\HttpFoundation\Response;
 
-class DefaultLanguageNotFoundException extends PluginException
+class DefaultLanguageNotFoundException extends HttpException
 {
     public function __construct()
     {

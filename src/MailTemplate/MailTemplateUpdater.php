@@ -16,26 +16,26 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-final readonly class MailTemplateUpdater implements UpdaterInterface
+final class MailTemplateUpdater implements UpdaterInterface
 {
-    private EntityRepository $mailTemplateRepository;
+    private readonly EntityRepository $mailTemplateRepository;
 
-    private EntityRepository $mailTemplateTranslationRepository;
+    private readonly EntityRepository $mailTemplateTranslationRepository;
 
-    private MailTemplateLanguagesLoader $mailTemplateLanguagesLoader;
+    private readonly MailTemplateLanguagesLoader $mailTemplateLanguagesLoader;
 
-    private MailTemplateValidator $mailTemplateValidator;
+    private readonly MailTemplateValidator $mailTemplateValidator;
 
-    private MailTemplateExistsStateInjector $mailTemplateExistsStateInjector;
+    private readonly MailTemplateExistsStateInjector $mailTemplateExistsStateInjector;
 
-    private MailTemplateCollection $mailTemplateCollection;
+    private readonly MailTemplateCollection $mailTemplateCollection;
 
-    private UpdatedAtFixer $updatedAtFixer;
+    private readonly UpdatedAtFixer $updatedAtFixer;
 
     public function __construct(
-        private ContainerInterface $container,
-        private string $directory,
-        private string $fallbackIsoCode,
+        private readonly ContainerInterface $container,
+        private readonly string $directory,
+        private readonly string $fallbackIsoCode,
     ) {
         /** @var EntityRepository $mailTemplateTypeRepository */
         $mailTemplateTypeRepository = $this->container->get('mail_template_type.repository');

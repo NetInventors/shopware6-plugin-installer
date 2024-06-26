@@ -14,14 +14,14 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-readonly class MailSendingFlowSequence implements FlowSequenceInterface
+class MailSendingFlowSequence implements FlowSequenceInterface
 {
     private EntityRepository $mailTemplateRepository;
 
     public function __construct(
-        private ContainerInterface $container,
-        private FlowEventInterface $flowEvent,
-        private string|null $mailTemplateTechnicalName = null,
+        private readonly ContainerInterface $container,
+        private readonly FlowEventInterface $flowEvent,
+        private readonly string|null $mailTemplateTechnicalName = null,
     ) {
         if (null === $this->mailTemplateTechnicalName) {
             throw new MissingMailTemplateArgumentException($this);

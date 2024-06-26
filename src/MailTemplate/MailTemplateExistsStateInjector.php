@@ -13,10 +13,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 
-readonly class MailTemplateExistsStateInjector
+class MailTemplateExistsStateInjector
 {
     public function __construct(
-        private EntityRepository $mailTemplateTypeRepository,
+        private readonly EntityRepository $mailTemplateTypeRepository,
     ) {
     }
 

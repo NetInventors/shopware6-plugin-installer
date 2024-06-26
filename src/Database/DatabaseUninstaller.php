@@ -12,12 +12,12 @@ use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Finder\Finder;
 
-readonly class DatabaseUninstaller implements UninstallerInterface
+class DatabaseUninstaller implements UninstallerInterface
 {
     public function __construct(
-        private ContainerInterface $container,
-        private string $namespace,
-        private string $directory,
+        private readonly ContainerInterface $container,
+        private readonly string $namespace,
+        private readonly string $directory,
     ) {
     }
 

@@ -15,24 +15,24 @@ use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-final readonly class MailTemplateInstaller implements InstallerInterface
+final class MailTemplateInstaller implements InstallerInterface
 {
-    private EntityRepository $mailTemplateTypeRepository;
+    private readonly EntityRepository $mailTemplateTypeRepository;
 
-    private EntityRepository $mailTemplateRepository;
+    private readonly EntityRepository $mailTemplateRepository;
 
-    private MailTemplateLanguagesLoader $mailTemplateLanguagesLoader;
+    private readonly MailTemplateLanguagesLoader $mailTemplateLanguagesLoader;
 
-    private MailTemplateValidator $mailTemplateValidator;
+    private readonly MailTemplateValidator $mailTemplateValidator;
 
-    private MailTemplateExistsStateInjector $mailTemplateExistsStateInjector;
+    private readonly MailTemplateExistsStateInjector $mailTemplateExistsStateInjector;
 
-    private MailTemplateCollection $mailTemplateCollection;
+    private readonly MailTemplateCollection $mailTemplateCollection;
 
     public function __construct(
-        private ContainerInterface $container,
-        private string $directory,
-        private string $fallbackIsoCode,
+        private readonly ContainerInterface $container,
+        private readonly string $directory,
+        private readonly string $fallbackIsoCode,
     ) {
         /** @var EntityRepository $mailTemplateTypeRepository */
         $mailTemplateTypeRepository = $this->container->get('mail_template_type.repository');

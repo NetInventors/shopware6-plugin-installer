@@ -13,17 +13,17 @@ use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-final readonly class MailTemplateUninstaller implements UninstallerInterface
+final class MailTemplateUninstaller implements UninstallerInterface
 {
-    private MailTemplateCollection $mailTemplateCollection;
+    private readonly MailTemplateCollection $mailTemplateCollection;
 
-    private EntityRepository $mailTemplateTypeRepository;
+    private readonly EntityRepository $mailTemplateTypeRepository;
 
-    private EntityRepository $mailTemplateRepository;
+    private readonly EntityRepository $mailTemplateRepository;
 
     public function __construct(
-        private ContainerInterface $container,
-        private string $directory,
+        private readonly ContainerInterface $container,
+        private readonly string $directory,
     ) {
         /** @var EntityRepository $mailTemplateTypeRepository */
         $mailTemplateTypeRepository = $this->container->get('mail_template_type.repository');

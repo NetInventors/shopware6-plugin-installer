@@ -11,10 +11,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 
-readonly class FlowEventExistsStateInjector
+class FlowEventExistsStateInjector
 {
     public function __construct(
-        private EntityRepository $flowRepository,
+        private readonly EntityRepository $flowRepository,
     ) {
     }
 

@@ -6,11 +6,11 @@ namespace NetInventors\Shopware6PluginInstaller\MailTemplate;
 
 use Symfony\Component\Finder\SplFileInfo;
 
-readonly class MailTemplateResources
+class MailTemplateResources
 {
     public function __construct(
-        public SplFileInfo|null $html,
-        public SplFileInfo|null $plain,
+        public readonly SplFileInfo|null $html,
+        public readonly SplFileInfo|null $plain,
     ) {
     }
 

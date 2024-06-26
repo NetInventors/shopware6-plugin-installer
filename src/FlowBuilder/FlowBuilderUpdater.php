@@ -8,11 +8,11 @@ use NetInventors\Shopware6PluginInstaller\UpdaterInterface;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-readonly class FlowBuilderUpdater implements UpdaterInterface
+class FlowBuilderUpdater implements UpdaterInterface
 {
     public function __construct(
-        private ContainerInterface $container,
-        private string $directory,
+        private readonly ContainerInterface $container,
+        private readonly string $directory,
     ) {
     }
 

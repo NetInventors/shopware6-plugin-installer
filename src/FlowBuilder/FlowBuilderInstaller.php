@@ -14,17 +14,17 @@ use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-readonly class FlowBuilderInstaller implements InstallerInterface
+class FlowBuilderInstaller implements InstallerInterface
 {
-    private EntityRepository $flowRepository;
+    private readonly EntityRepository $flowRepository;
 
-    private FlowEventExistsStateInjector $flowEventExistsStateInjector;
+    private readonly FlowEventExistsStateInjector $flowEventExistsStateInjector;
 
-    private FlowEventCollection $flowEventCollection;
+    private readonly FlowEventCollection $flowEventCollection;
 
     public function __construct(
-        private ContainerInterface $container,
-        private string $directory,
+        private readonly ContainerInterface $container,
+        private readonly string $directory,
     ) {
         /** @var EntityRepository $flowRepository */
         $flowRepository = $this->container->get('flow.repository');

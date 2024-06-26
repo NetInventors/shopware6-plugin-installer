@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace NetInventors\Shopware6PluginInstaller\MailTemplate\Exception;
 
 use NetInventors\Shopware6PluginInstaller\MailTemplate\MailTemplateInterface;
-use Shopware\Core\Framework\Plugin\PluginException;
+use Shopware\Core\Framework\HttpException;
 use Symfony\Component\HttpFoundation\Response;
 
-class SubjectException extends PluginException
+class SubjectException extends HttpException
 {
     public function __construct(string $message, array $variables = [])
     {
