@@ -1,7 +1,7 @@
 {
   "name": "netinventors/shopware6-plugin-installer",
   "description": "Shopware 6 plugin installer",
-  "license": "proprietary",
+  "license": "MPL-2.0",
   "authors": [
     {
       "name": "Net Inventors GmbH",
