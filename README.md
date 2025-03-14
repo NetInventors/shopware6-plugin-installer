@@ -17,7 +17,6 @@ use NetInventors\Shopware6PluginInstaller\MailTemplate\MailTemplateUpdater;
 use NetInventors\Shopware6PluginInstaller\PluginInstaller;
 use NetInventors\Shopware6PluginInstaller\PluginUpdater;
 use NetInventors\Shopware6PluginInstaller\PluginUninstaller;
-use Shopware\Core\Framework\Parameter\AdditionalBundleParameters;
 use Shopware\Core\Framework\Plugin;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
@@ -61,7 +60,6 @@ class ExamplePlugin extends Plugin
 
         $pluginUpdater->registerUpdater(new MailTemplateUpdater($this->container, __DIR__, self::FALLBACK_ISO_CODE));
         $pluginUpdater->registerUpdater(new FlowBuilderUpdater($this->container, __DIR__));
-
 
         $pluginUpdater->update($updateContext);
     }
