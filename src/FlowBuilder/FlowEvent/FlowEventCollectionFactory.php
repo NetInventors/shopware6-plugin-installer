@@ -9,18 +9,32 @@ use Symfony\Component\Filesystem\Path;
 
 class FlowEventCollectionFactory
 {
+    /**
+     * @var array<string, FlowEventCollection>
+     */
+    private static array $cache = [];
+
     public static function create(ContainerInterface $container, string $directory): FlowEventCollection
     {
         $configurationFile = Path::join($directory, 'Resources/config/setup/flow-builder.php');
+
+        if (isset(self::$cache[$configurationFile])) {
+            return self::$cache[$configurationFile];
+        }
 
         /** @var list<class-string<FlowEventInterface>> $flowBuilderConfiguration */
         $flowBuilderConfiguration = [];
 
         if (\is_file($configurationFile)) {
-            /** @var list<class-string<FlowEventInterface>> $flowBuilderConfiguration */
-            $flowBuilderConfiguration = (array) require $configurationFile;
+            /**
+             * @noinspection UsingInclusionOnceReturnValueInspection
+             * @var list<class-string<FlowEventInterface>> $flowBuilderConfiguration
+             */
+            $flowBuilderConfiguration = (array) require_once $configurationFile;
         }
 
-        return new FlowEventCollection($container, $flowBuilderConfiguration);
+        self::$cache[$configurationFile] = new FlowEventCollection($container, $flowBuilderConfiguration);
+
+        return self::$cache[$configurationFile];
     }
 }
