@@ -61,6 +61,7 @@ final readonly class MailTemplateUpdater implements UpdaterInterface
     /**
      * @throws Exception
      */
+    #[\Override]
     public function update(UpdateContext $updateContext): void
     {
         (new MailTemplateInstaller($this->container, $this->directory, $this->fallbackIsoCode))
@@ -71,6 +72,7 @@ final readonly class MailTemplateUpdater implements UpdaterInterface
         $this->addMissingTemplateTranslations($updateContext->getContext());
     }
 
+    #[\Override]
     public function postUpdate(UpdateContext $updateContext): void
     {
     }

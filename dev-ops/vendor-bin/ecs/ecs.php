@@ -14,8 +14,6 @@ return static function (ECSConfig $config): void {
         $baseDir . '/src',
     ]);
 
-    $config->tag(JUnitOutputFormatter::class, OutputFormatterInterface::class);
-
     $config->skip([
         $baseDir . '/dev-ops',
         $baseDir . '/vendor',

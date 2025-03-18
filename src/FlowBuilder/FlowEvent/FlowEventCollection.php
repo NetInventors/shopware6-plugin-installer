@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * @extends Collection<FlowEventInterface>
  */
-class FlowEventCollection extends Collection
+final class FlowEventCollection extends Collection
 {
     /**
      * @param list<class-string<FlowEventInterface>> $installableFlowEvents

@@ -7,7 +7,7 @@ namespace NetInventors\Shopware6PluginInstaller\FlowBuilder\FlowEvent;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Path;
 
-class FlowEventCollectionFactory
+final class FlowEventCollectionFactory
 {
     /**
      * @var array<string, FlowEventCollection>

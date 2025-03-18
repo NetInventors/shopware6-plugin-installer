@@ -6,7 +6,7 @@ namespace NetInventors\Shopware6PluginInstaller\MailTemplate;
 
 use Shopware\Core\System\Language\LanguageEntity;
 
-readonly class MailTemplateLanguages
+final readonly class MailTemplateLanguages
 {
     /**
      * @param list<LanguageEntity> $languages

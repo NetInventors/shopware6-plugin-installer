@@ -9,7 +9,7 @@ use Shopware\Core\Framework\Struct\Collection;
 /**
  * @extends Collection<true>
  */
-class MailTemplateTranslatedLocalesCollection extends Collection
+final class MailTemplateTranslatedLocalesCollection extends Collection
 {
     /**
      * @param list<string> $locales

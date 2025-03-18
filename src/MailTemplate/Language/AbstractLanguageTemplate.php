@@ -19,6 +19,7 @@ abstract class AbstractLanguageTemplate implements ArrayableInterface
     /**
      * @return array<string, mixed|null>
      */
+    #[\Override]
     public function toArray(): array
     {
         return [

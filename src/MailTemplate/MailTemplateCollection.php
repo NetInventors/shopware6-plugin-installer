@@ -9,7 +9,7 @@ use Shopware\Core\Framework\Struct\Collection;
 /**
  * @extends Collection<MailTemplateInterface>
  */
-class MailTemplateCollection extends Collection
+final class MailTemplateCollection extends Collection
 {
     /**
      * @param array<class-string<MailTemplateInterface>, list<string>> $installableMailTemplates

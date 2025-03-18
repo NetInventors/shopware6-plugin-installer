@@ -15,6 +15,7 @@ abstract class AbstractFlowEvent implements FlowEventInterface
     ) {
     }
 
+    #[\Override]
     public function isActive(): bool
     {
         return true;

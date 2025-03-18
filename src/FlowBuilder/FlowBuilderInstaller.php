@@ -14,7 +14,7 @@ use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-readonly class FlowBuilderInstaller implements InstallerInterface
+final readonly class FlowBuilderInstaller implements InstallerInterface
 {
     private EntityRepository $flowRepository;
 
@@ -34,15 +34,18 @@ readonly class FlowBuilderInstaller implements InstallerInterface
         $this->flowEventCollection          = FlowEventCollectionFactory::create($this->container, $this->directory);
     }
 
+    #[\Override]
     public function install(InstallContext $installContext): void
     {
         $this->insertNonExistentFlows($installContext->getContext());
     }
 
+    #[\Override]
     public function postInstall(InstallContext $installContext): void
     {
     }
 
+    #[\Override]
     public function activate(ActivateContext $activateContext): void
     {
     }

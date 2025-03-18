@@ -46,31 +46,37 @@ abstract class AbstractMailTemplate implements MailTemplateInterface
         }
     }
 
+    #[\Override]
     public function getLocales(): array
     {
         return $this->locales;
     }
 
+    #[\Override]
     public function supportsLocale(string $locale): bool
     {
         return \in_array($locale, $this->locales, true);
     }
 
+    #[\Override]
     public function getResourceLocation(): string
     {
         return Path::join($this->directory, 'Resources/mails', $this->getTechnicalName());
     }
 
+    #[\Override]
     public function getResourceFiles(): array
     {
         return $this->resources;
     }
 
+    #[\Override]
     public function getResourceFilesForLocale(string $locale): MailTemplateResources|null
     {
         return $this->resources[$locale] ?? null;
     }
 
+    #[\Override]
     public function getSenderName(): string
     {
         return '{{ salesChannel.name }}';

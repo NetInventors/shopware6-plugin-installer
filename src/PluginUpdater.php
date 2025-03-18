@@ -18,6 +18,7 @@ final class PluginUpdater implements UpdaterInterface
         $this->updaterCollection[] = $updater;
     }
 
+    #[\Override]
     public function update(UpdateContext $updateContext): void
     {
         foreach ($this->updaterCollection as $updater) {
@@ -25,6 +26,7 @@ final class PluginUpdater implements UpdaterInterface
         }
     }
 
+    #[\Override]
     public function postUpdate(UpdateContext $updateContext): void
     {
         foreach ($this->updaterCollection as $updater) {

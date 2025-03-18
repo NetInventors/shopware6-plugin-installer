@@ -17,19 +17,20 @@
         </ignoreFiles>
     </projectFiles>
 
+    <stubs>
+        <file name="./stubs/shopware/core/Framework/DataAbstractionLayer/Search/EntitySearchResult.stub.php" />
+    </stubs>
+
+    <forbiddenFunctions>
+        <function name="dd" />
+        <function name="die" />
+        <function name="dump" />
+        <function name="exit" />
+        <function name="print_r" />
+        <function name="var_dump" />
+    </forbiddenFunctions>
+
     <issueHandlers>
         <MissingClassConstType errorLevel="suppress" />
-
-        <InternalClass>
-            <errorLevel type="suppress">
-                <referencedClass name="Shopware\Core\Defaults" />
-            </errorLevel>
-        </InternalClass>
     </issueHandlers>
-
-    <plugins>
-        <pluginClass class="DQ5Studios\PsalmJunit\Plugin">
-            <filepath>./junit.xml</filepath>
-        </pluginClass>
-    </plugins>
 </psalm>

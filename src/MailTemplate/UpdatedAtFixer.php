@@ -11,7 +11,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEve
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StorageAware;
 use Shopware\Core\Framework\Uuid\Uuid;
 
-readonly class UpdatedAtFixer
+final readonly class UpdatedAtFixer
 {
     public function __construct(
         private Connection $connection,

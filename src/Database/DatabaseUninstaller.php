@@ -12,7 +12,7 @@ use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Finder\Finder;
 
-readonly class DatabaseUninstaller implements UninstallerInterface
+final readonly class DatabaseUninstaller implements UninstallerInterface
 {
     public function __construct(
         private ContainerInterface $container,
@@ -24,6 +24,7 @@ readonly class DatabaseUninstaller implements UninstallerInterface
     /**
      * @throws Exception
      */
+    #[\Override]
     public function uninstall(UninstallContext $uninstallContext): void
     {
         if (!$uninstallContext->keepUserData()) {
@@ -37,6 +38,7 @@ readonly class DatabaseUninstaller implements UninstallerInterface
         }
     }
 
+    #[\Override]
     public function deactivate(DeactivateContext $deactivateContext): void
     {
     }

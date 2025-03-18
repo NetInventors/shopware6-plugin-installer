@@ -14,7 +14,7 @@ use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-readonly class FlowBuilderUninstaller implements UninstallerInterface
+final readonly class FlowBuilderUninstaller implements UninstallerInterface
 {
     private EntityRepository $flowRepository;
 
@@ -31,6 +31,7 @@ readonly class FlowBuilderUninstaller implements UninstallerInterface
         $this->flowEventCollection = FlowEventCollectionFactory::create($this->container, $this->directory);
     }
 
+    #[\Override]
     public function uninstall(UninstallContext $uninstallContext): void
     {
         if ($uninstallContext->keepUserData()) {
@@ -54,6 +55,7 @@ readonly class FlowBuilderUninstaller implements UninstallerInterface
         $this->flowRepository->delete($data, $uninstallContext->getContext());
     }
 
+    #[\Override]
     public function deactivate(DeactivateContext $deactivateContext): void
     {
     }

@@ -19,6 +19,7 @@ final class PluginInstaller implements InstallerInterface
         $this->installerCollection[] = $installer;
     }
 
+    #[\Override]
     public function install(InstallContext $installContext): void
     {
         foreach ($this->installerCollection as $installer) {
@@ -26,6 +27,7 @@ final class PluginInstaller implements InstallerInterface
         }
     }
 
+    #[\Override]
     public function postInstall(InstallContext $installContext): void
     {
         foreach ($this->installerCollection as $installer) {
@@ -33,6 +35,7 @@ final class PluginInstaller implements InstallerInterface
         }
     }
 
+    #[\Override]
     public function activate(ActivateContext $activateContext): void
     {
         foreach ($this->installerCollection as $installer) {

@@ -6,7 +6,7 @@ namespace NetInventors\Shopware6PluginInstaller\MailTemplate;
 
 use Symfony\Component\Filesystem\Path;
 
-class MailTemplateCollectionFactory
+final class MailTemplateCollectionFactory
 {
     /**
      * @var array<string, MailTemplateCollection>

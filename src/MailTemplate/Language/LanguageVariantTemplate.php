@@ -6,7 +6,7 @@ namespace NetInventors\Shopware6PluginInstaller\MailTemplate\Language;
 
 use Shopware\Core\System\Language\LanguageEntity;
 
-class LanguageVariantTemplate extends AbstractLanguageTemplate
+final class LanguageVariantTemplate extends AbstractLanguageTemplate
 {
     public function __construct(
         private readonly string $id,
@@ -24,6 +24,7 @@ class LanguageVariantTemplate extends AbstractLanguageTemplate
     /**
      * @return array<string, mixed|null>
      */
+    #[\Override]
     public function toArray(): array
     {
         return \array_merge(

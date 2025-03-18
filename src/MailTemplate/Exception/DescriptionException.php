@@ -8,7 +8,7 @@ use NetInventors\Shopware6PluginInstaller\MailTemplate\MailTemplateInterface;
 use Shopware\Core\Framework\Plugin\PluginException;
 use Symfony\Component\HttpFoundation\Response;
 
-class DescriptionException extends PluginException
+final class DescriptionException extends PluginException
 {
     public function __construct(string $message, array $variables = [])
     {

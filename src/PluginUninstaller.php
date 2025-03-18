@@ -19,6 +19,7 @@ final class PluginUninstaller implements UninstallerInterface
         $this->uninstallerCollection[] = $uninstaller;
     }
 
+    #[\Override]
     public function uninstall(UninstallContext $uninstallContext): void
     {
         foreach ($this->uninstallerCollection as $uninstaller) {
@@ -26,6 +27,7 @@ final class PluginUninstaller implements UninstallerInterface
         }
     }
 
+    #[\Override]
     public function deactivate(DeactivateContext $deactivateContext): void
     {
         foreach ($this->uninstallerCollection as $uninstaller) {

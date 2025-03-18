@@ -8,7 +8,7 @@ use NetInventors\Shopware6PluginInstaller\MailTemplate\MailTemplateInterface;
 use Shopware\Core\Framework\Plugin\PluginException;
 use Symfony\Component\HttpFoundation\Response;
 
-class MissingTemplateFileException extends PluginException
+final class MissingTemplateFileException extends PluginException
 {
     public function __construct(MailTemplateInterface $mailTemplate, string $locale)
     {

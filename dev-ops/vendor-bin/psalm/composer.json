@@ -1,7 +1,6 @@
 {
   "require-dev": {
     "php": ">=8.2",
-    "dq5studios/psalm-junit": "^3.0.0",
-    "vimeo/psalm": "^5.25.0"
+    "vimeo/psalm": "^6.8.7"
   }
 }

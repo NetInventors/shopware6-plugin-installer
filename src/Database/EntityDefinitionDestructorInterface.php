@@ -13,7 +13,7 @@ interface EntityDefinitionDestructorInterface
     public function getEntityDefinition(): EntityDefinition;
 
     /**
-     * @return list<class-string<EntityDefinitionDestructorInterface>>
+     * @return list<class-string<self>>
      */
     public function getDependencies(): array;
 

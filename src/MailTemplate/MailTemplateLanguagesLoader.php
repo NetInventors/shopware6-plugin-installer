@@ -15,7 +15,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\System\Language\LanguageEntity;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-readonly class MailTemplateLanguagesLoader
+final readonly class MailTemplateLanguagesLoader
 {
     private EntityRepository $languageRepository;
 

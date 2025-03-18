@@ -36,6 +36,7 @@ final readonly class MailTemplateUninstaller implements UninstallerInterface
         $this->mailTemplateCollection     = MailTemplateCollectionFactory::create($this->directory);
     }
 
+    #[\Override]
     public function uninstall(UninstallContext $uninstallContext): void
     {
         if ($uninstallContext->keepUserData()) {
@@ -60,6 +61,7 @@ final readonly class MailTemplateUninstaller implements UninstallerInterface
         $this->removeIds($this->mailTemplateTypeRepository, $mailTemplateTypeIds, $context);
     }
 
+    #[\Override]
     public function deactivate(DeactivateContext $deactivateContext): void
     {
     }

@@ -48,15 +48,18 @@ final readonly class MailTemplateInstaller implements InstallerInterface
         $this->mailTemplateCollection          = MailTemplateCollectionFactory::create($this->directory);
     }
 
+    #[\Override]
     public function install(InstallContext $installContext): void
     {
         $this->insertNonExistentTemplates($installContext->getContext());
     }
 
+    #[\Override]
     public function postInstall(InstallContext $installContext): void
     {
     }
 
+    #[\Override]
     public function activate(ActivateContext $activateContext): void
     {
     }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace NetInventors\Shopware6PluginInstaller\MailTemplate\Language;
 
-class DefaultLanguageTemplate extends AbstractLanguageTemplate
+final class DefaultLanguageTemplate extends AbstractLanguageTemplate
 {
     /**
      * @param list<LanguageVariantTemplate> $translations
@@ -31,6 +31,7 @@ class DefaultLanguageTemplate extends AbstractLanguageTemplate
     /**
      * @return array<string, mixed|null>
      */
+    #[\Override]
     public function toArray(): array
     {
         return [

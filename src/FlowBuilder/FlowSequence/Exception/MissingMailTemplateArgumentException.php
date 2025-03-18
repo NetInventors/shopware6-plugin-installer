@@ -8,7 +8,7 @@ use NetInventors\Shopware6PluginInstaller\FlowBuilder\FlowSequence\FlowSequenceI
 use Shopware\Core\Framework\Plugin\PluginException;
 use Symfony\Component\HttpFoundation\Response;
 
-class MissingMailTemplateArgumentException extends PluginException
+final class MissingMailTemplateArgumentException extends PluginException
 {
     public function __construct(FlowSequenceInterface $flowSequence)
     {

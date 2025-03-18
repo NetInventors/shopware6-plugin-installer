@@ -14,7 +14,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-readonly class MailSendingFlowSequence implements FlowSequenceInterface
+final readonly class MailSendingFlowSequence implements FlowSequenceInterface
 {
     private EntityRepository $mailTemplateRepository;
 
@@ -33,6 +33,7 @@ readonly class MailSendingFlowSequence implements FlowSequenceInterface
         $this->mailTemplateRepository = $mailTemplateRepository;
     }
 
+    #[\Override]
     public function build(Context $context): array
     {
         /**
@@ -58,6 +59,7 @@ readonly class MailSendingFlowSequence implements FlowSequenceInterface
         ];
     }
 
+    #[\Override]
     public function getConfig(MailTemplateEntity $mailTemplateEntity, Context $context): array
     {
         return [
