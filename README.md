@@ -1,4 +1,10 @@
-Example usage:
+## Installation
+
+```sh
+composer require netinventors/shopware6-plugin-installer
+```
+
+## Example usage
 
 ```php
 <?php
@@ -28,64 +34,198 @@ class ExamplePlugin extends Plugin
 {
     private const FALLBACK_ISO_CODE = 'en-GB';
 
+    private ClassLoader|null $classLoader = null;
+
+    private Serializer|null $serializier = null;
+
+    private PluginInstaller|null $installer = null;
+
+    private PluginUpdater|null $updater = null;
+
+    private PluginUninstaller|null $uninstaller = null;
+
     public function install(InstallContext $installContext): void
     {
         parent::install($installContext);
 
-        if (!$this->container instanceof ContainerInterface) {
-            return;
-        }
+        $this->injectAutoloader(
+            'netinventors/shopware6-plugin-installer',
+            'NetInventors\\Shopware6PluginInstaller\\',
+        );
 
-        $pluginInstaller = new PluginInstaller();
+        $this->getPluginInstaller()->install($installContext);
+    }
 
-        $pluginInstaller->registerInstaller(new MailTemplateInstaller(
-            $this->container,
-            __DIR__,
-            self::FALLBACK_ISO_CODE,
-        ));
+    public function postInstall(InstallContext $installContext): void
+    {
+        parent::postInstall($installContext);
 
-        $pluginInstaller->registerInstaller(new FlowBuilderInstaller($this->container, __DIR__));
+        $this->injectAutoloader(
+            'netinventors/shopware6-plugin-installer',
+            'NetInventors\\Shopware6PluginInstaller\\',
+        );
 
-        $pluginInstaller->install($installContext);
+        $this->getPluginInstaller()->postInstall($installContext);
     }
 
     public function update(UpdateContext $updateContext): void
     {
         parent::update($updateContext);
 
-        if (!$this->container instanceof ContainerInterface) {
-            return;
-        }
+        $this->injectAutoloader(
+            'netinventors/shopware6-plugin-installer',
+            'NetInventors\\Shopware6PluginInstaller\\',
+        );
 
-        $pluginUpdater = new PluginUpdater();
+        $this->getPluginUpdater()->update($updateContext);
+    }
 
-        $pluginUpdater->registerUpdater(new MailTemplateUpdater($this->container, __DIR__, self::FALLBACK_ISO_CODE));
-        $pluginUpdater->registerUpdater(new FlowBuilderUpdater($this->container, __DIR__));
+    public function postUpdate(UpdateContext $updateContext): void
+    {
+        parent::postUpdate($updateContext);
 
+        $this->injectAutoloader(
+            'netinventors/shopware6-plugin-installer',
+            'NetInventors\\Shopware6PluginInstaller\\',
+        );
 
-        $pluginUpdater->update($updateContext);
+        $this->getPluginUpdater()->postUpdate($updateContext);
     }
 
     public function uninstall(UninstallContext $uninstallContext): void
     {
         parent::uninstall($uninstallContext);
 
-        if (!$this->container instanceof ContainerInterface || $uninstallContext->keepUserData()) {
-            return;
-        }
+        $this->getPluginUninstaller()->uninstall($uninstallContext);
+    }
 
-        $pluginUninstaller = new PluginUninstaller();
+    public function activate(ActivateContext $activateContext): void
+    {
+        parent::activate($activateContext);
 
-        $pluginUninstaller->registerUninstaller(new DatabaseUninstaller($this->container, __NAMESPACE__, __DIR__));
-        $pluginUninstaller->registerUninstaller(new FlowBuilderUninstaller($this->container, __DIR__));
-        $pluginUninstaller->registerUninstaller(new MailTemplateUninstaller($this->container, __DIR__));
+        $this->getPluginInstaller()->activate($activateContext);
+    }
 
-        $pluginUninstaller->uninstall($uninstallContext);
+    public function deactivate(DeactivateContext $deactivateContext): void
+    {
+        parent::deactivate($deactivateContext);
+
+        $this->getPluginUninstaller()->deactivate($deactivateContext);
     }
 
     public function executeComposerCommands(): bool
     {
         return true;
+    }
+
+    private function getContainer(): ContainerInterface
+    {
+        return $this->container ?? throw new \RuntimeException('Container must be initialized.');
+    }
+
+    private function getPluginInstaller(): PluginInstaller
+    {
+        if (null !== $this->installer) {
+            return $this->installer;
+        }
+
+        $this->installer = new PluginInstaller();
+
+        $container = $this->getContainer();
+
+        $this->installer->registerInstaller(new MailTemplateInstaller($container, __DIR__, self::FALLBACK_ISO_CODE));
+        $this->installer->registerInstaller(new FlowBuilderInstaller($container, __DIR__));
+
+        return $this->installer;
+    }
+
+    private function getPluginUpdater(): PluginUpdater
+    {
+        if (null !== $this->updater) {
+            return $this->updater;
+        }
+
+        $this->updater = new PluginUpdater();
+
+        $container = $this->getContainer();
+
+        $this->updater->registerUpdater(new MailTemplateUpdater($container, __DIR__, self::FALLBACK_ISO_CODE));
+        $this->updater->registerUpdater(new FlowBuilderUpdater($container, __DIR__));
+
+        return $this->updater;
+    }
+
+    private function getPluginUninstaller(): PluginUninstaller
+    {
+        if (null !== $this->uninstaller) {
+            return $this->uninstaller;
+        }
+
+        $this->uninstaller = new PluginUninstaller();
+
+        $container = $this->getContainer();
+
+        $this->uninstaller->registerUninstaller(new DatabaseUninstaller($container, __NAMESPACE__, __DIR__));
+        $this->uninstaller->registerUninstaller(new FlowBuilderUninstaller($container, __DIR__));
+        $this->uninstaller->registerUninstaller(new MailTemplateUninstaller($container, __DIR__));
+
+        return $this->uninstaller;
+    }
+
+    private function injectAutoloader(string $packageName, string $psr4Prefix): void
+    {
+        $psr4Prefixes = $this->getClassLoader()->getPrefixesPsr4();
+
+        if (isset($psr4Prefixes[$psr4Prefix])) {
+            return;
+        }
+
+        $application = new Application();
+
+        $application->setAutoExit(false);
+
+        $output = new BufferedOutput();
+        $input  = new ArrayInput([
+            'command' => 'show',
+            '-f'      => 'json',
+            'package' => $packageName,
+        ]);
+
+        if (Command::SUCCESS !== $application->run($input, $output)) {
+            throw new \RuntimeException("Cannot resolve plugin required package \"$packageName\".");
+        }
+
+        $package = (array) $this->getSerializer()->decode($output->fetch(), JsonEncoder::FORMAT);
+
+        /** @var array<string, string> $psr4Autoloaders **/
+        $psr4Autoloaders = (array) ($package['autoload']['psr-4'] ?? []);
+        $pluginPath      = (string) $package['path'];
+        $classLoader     = $this->getClassLoader();
+
+        foreach ($psr4Autoloaders as $namespace => $path) {
+            $classLoader->addPsr4($namespace, Path::join($pluginPath, $path));
+        }
+    }
+
+    private function getClassLoader(): ClassLoader
+    {
+        if (null !== $this->classLoader) {
+            return $this->classLoader;
+        }
+
+        /** @var KernelPluginLoader $pluginLoader **/
+        $pluginLoader = $this->getContainer()->get(KernelPluginLoader::class);
+
+        return $this->classLoader = $pluginLoader->getClassLoader();
+    }
+
+    private function getSerializer(): Serializer
+    {
+        if (null === $this->serializier) {
+            $this->serializier = new Serializer([], [ new JsonEncoder() ]);
+        }
+
+        return $this->serializier;
     }
 }
 ```
