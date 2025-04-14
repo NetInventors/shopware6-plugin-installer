@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace NetInventors\ExamplePlugin;
 
+use Composer\Autoload\ClassLoader;
+use Composer\Console\Application;
 use NetInventors\Shopware6PluginInstaller\Database\DatabaseUninstaller;
 use NetInventors\Shopware6PluginInstaller\FlowBuilder\FlowBuilderInstaller;
 use NetInventors\Shopware6PluginInstaller\FlowBuilder\FlowBuilderUninstaller;
@@ -24,10 +26,19 @@ use NetInventors\Shopware6PluginInstaller\PluginInstaller;
 use NetInventors\Shopware6PluginInstaller\PluginUpdater;
 use NetInventors\Shopware6PluginInstaller\PluginUninstaller;
 use Shopware\Core\Framework\Plugin;
+use Shopware\Core\Framework\Plugin\Context\ActivateContext;
+use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
+use Shopware\Core\Framework\Plugin\KernelPluginLoader\KernelPluginLoader;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Filesystem\Path;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Serializer;
 
 class ExamplePlugin extends Plugin
 {
@@ -35,7 +46,7 @@ class ExamplePlugin extends Plugin
 
     private ClassLoader|null $classLoader = null;
 
-    private Serializer|null $serializier = null;
+    private Serializer|null $serializer = null;
 
     private PluginInstaller|null $installer = null;
 
@@ -220,11 +231,11 @@ class ExamplePlugin extends Plugin
 
     private function getSerializer(): Serializer
     {
-        if (null === $this->serializier) {
-            $this->serializier = new Serializer([], [ new JsonEncoder() ]);
+        if (null === $this->serializer) {
+            $this->serializer = new Serializer([], [ new JsonEncoder() ]);
         }
 
-        return $this->serializier;
+        return $this->serializer;
     }
 }
 ```
