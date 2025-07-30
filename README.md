@@ -199,6 +199,7 @@ class ExamplePlugin extends Plugin
             'command' => 'show',
             '-f'      => 'json',
             'package' => $packageName,
+            '-v',
         ]);
 
         if (Command::SUCCESS !== $application->run($input, $output)) {
