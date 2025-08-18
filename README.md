@@ -38,6 +38,7 @@ use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 use Symfony\Component\Serializer\Serializer;
 
 class ExamplePlugin extends Plugin
@@ -206,7 +207,17 @@ class ExamplePlugin extends Plugin
             throw new \RuntimeException("Cannot resolve plugin required package \"$packageName\".");
         }
 
-        $package = (array) $this->getSerializer()->decode($output->fetch(), JsonEncoder::FORMAT);
+        $packageInfo = $output->fetch();
+
+        try {
+            $package = (array) $this->getSerializer()->decode($packageInfo, JsonEncoder::FORMAT);
+        } catch (NotEncodableValueException $exception) {
+            throw new NotEncodableValueException(
+                \sprintf('Cannot decode string as JSON: "%s"', $packageInfo),
+                $exception->getCode(),
+                $exception,
+            );
+        }
 
         /** @var array<string, string> $psr4Autoloaders **/
         $psr4Autoloaders = (array) ($package['autoload']['psr-4'] ?? []);
