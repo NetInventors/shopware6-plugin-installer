@@ -30,6 +30,7 @@ class FlowEventExistsStateInjector
 
         $criteria
             ->addFilter(new EqualsAnyFilter('eventName', $installableFlows->getEventNames()))
+            ->addFilter(new EqualsAnyFilter('sequences.actionName', $installableFlows->getActionNames()))
         ;
 
         $flowEntities = $this->flowRepository->search($criteria, $context);
