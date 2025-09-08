@@ -34,4 +34,15 @@ class FlowEventCollection extends Collection
             \array_values($this->elements),
         );
     }
+
+    /**
+     * @return list<string>
+     */
+    public function getActionNames(): array
+    {
+        return \array_map(
+            static fn (FlowEventInterface $flowEvent): string => $flowEvent::getActionName(),
+            \array_values($this->elements),
+        );
+    }
 }
