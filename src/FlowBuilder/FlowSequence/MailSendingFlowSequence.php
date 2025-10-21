@@ -83,7 +83,8 @@ final readonly class MailSendingFlowSequence implements FlowSequenceInterface
             'mailTemplateTypeId' => $mailTemplateEntity->getMailTemplateTypeId(),
         ];
 
-        $documentTypes = $this->buildDocumentTypes($context);
+        $documentTypes = $this->getDocumentTypeIds($context);
+
         if ([] !== $documentTypes) {
             $config['documentTypeIds'] = $documentTypes;
         }
@@ -113,15 +114,15 @@ final readonly class MailSendingFlowSequence implements FlowSequenceInterface
     /**
      * @return list<string>
      */
-    private function buildDocumentTypes(Context $context): array
+    private function getDocumentTypeIds(Context $context): array
     {
         if ([] === $this->documentTypes) {
             return [];
         }
 
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsAnyFilter('technicalName', $this->documentTypes));
-
-        return $this->documentTypeRepository->searchIds($criteria, $context)->getIds();
+        return $this->documentTypeRepository->searchIds(
+            (new Criteria())->addFilter(new EqualsAnyFilter('technicalName', $this->documentTypes)),
+            $context,
+        )->getIds();
     }
 }
