@@ -10,6 +10,7 @@ use Shopware\Core\Content\MailTemplate\MailTemplateEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -18,10 +19,16 @@ final readonly class MailSendingFlowSequence implements FlowSequenceInterface
 {
     private EntityRepository $mailTemplateRepository;
 
+    private EntityRepository $documentTypeRepository;
+
+    /**
+     * @param list<string> $documentTypes
+     */
     public function __construct(
         private ContainerInterface $container,
         private FlowEventInterface $flowEvent,
         private string|null $mailTemplateTechnicalName = null,
+        private array $documentTypes = [],
     ) {
         if (null === $this->mailTemplateTechnicalName) {
             throw new MissingMailTemplateArgumentException($this);
@@ -31,6 +38,11 @@ final readonly class MailSendingFlowSequence implements FlowSequenceInterface
         $mailTemplateRepository = $this->container->get('mail_template.repository');
 
         $this->mailTemplateRepository = $mailTemplateRepository;
+
+        /** @var EntityRepository $documentTypeRepository */
+        $documentTypeRepository = $this->container->get('document_type.repository');
+
+        $this->documentTypeRepository = $documentTypeRepository;
     }
 
     #[\Override]
@@ -62,7 +74,7 @@ final readonly class MailSendingFlowSequence implements FlowSequenceInterface
     #[\Override]
     public function getConfig(MailTemplateEntity $mailTemplateEntity, Context $context): array
     {
-        return [
+        $config = [
             'recipient'          => [
                 'data' => [],
                 'type' => 'default',
@@ -70,6 +82,14 @@ final readonly class MailSendingFlowSequence implements FlowSequenceInterface
             'mailTemplateId'     => $mailTemplateEntity->getId(),
             'mailTemplateTypeId' => $mailTemplateEntity->getMailTemplateTypeId(),
         ];
+
+        $documentTypes = $this->getDocumentTypeIds($context);
+
+        if ([] !== $documentTypes) {
+            $config['documentTypeIds'] = $documentTypes;
+        }
+
+        return $config;
     }
 
     private function getMailTemplateByTechnicalName(
@@ -89,5 +109,20 @@ final readonly class MailSendingFlowSequence implements FlowSequenceInterface
         $mailTemplateEntity = $this->mailTemplateRepository->search($criteria, $context)->first();
 
         return $mailTemplateEntity;
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function getDocumentTypeIds(Context $context): array
+    {
+        if ([] === $this->documentTypes) {
+            return [];
+        }
+
+        return $this->documentTypeRepository->searchIds(
+            (new Criteria())->addFilter(new EqualsAnyFilter('technicalName', $this->documentTypes)),
+            $context,
+        )->getIds();
     }
 }
