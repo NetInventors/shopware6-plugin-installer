@@ -8,17 +8,20 @@ use NetInventors\Shopware6PluginInstaller\UpdaterInterface;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-final class ImportExportProfileUpdater implements UpdaterInterface
+final readonly class ImportExportProfileUpdater implements UpdaterInterface
 {
     public function __construct(
-        private readonly ContainerInterface $container,
+        private ContainerInterface $container,
+        private string $directory,
     ) {
     }
 
     #[\Override]
     public function update(UpdateContext $updateContext): void
     {
-        (new ImportExportProfileInstaller($this->container))->install($updateContext);
+        $importExportInstaller = new ImportExportProfileInstaller($this->container, $this->directory);
+
+        $importExportInstaller->install($updateContext);
     }
 
     #[\Override]

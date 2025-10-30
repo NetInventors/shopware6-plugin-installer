@@ -14,9 +14,9 @@ final class CustomFieldSetCollectionFactory
      */
     private static array $cache = [];
 
-    public static function create(ContainerInterface $container): CustomFieldSetCollection
+    public static function create(ContainerInterface $container, string $directory): CustomFieldSetCollection
     {
-        $configurationFile = Path::join(\dirname(__DIR__, 3), 'Resources/config/setup/custom-field-set.php');
+        $configurationFile = Path::join($directory, 'Resources/config/setup/custom-field-set.php');
 
         if (isset(self::$cache[$configurationFile])) {
             return self::$cache[$configurationFile];
@@ -26,7 +26,10 @@ final class CustomFieldSetCollectionFactory
         $customFieldSetConfiguration = [];
 
         if (\is_file($configurationFile)) {
-            /** @var list<class-string<CustomFieldSetInterface>> $customFieldSetConfiguration */
+            /**
+             * @noinspection UsingInclusionOnceReturnValueInspection
+             * @var list<class-string<CustomFieldSetInterface>> $customFieldSetConfiguration
+             */
             $customFieldSetConfiguration = (array) require_once $configurationFile;
         }
 

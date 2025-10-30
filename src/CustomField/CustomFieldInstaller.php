@@ -17,7 +17,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * @psalm-import-type FieldConfig from CustomFieldInterface
  */
-final class CustomFieldInstaller implements InstallerInterface
+final readonly class CustomFieldInstaller implements InstallerInterface
 {
     private EntityRepository $fieldSetRepository;
 
@@ -28,7 +28,8 @@ final class CustomFieldInstaller implements InstallerInterface
     private CustomFieldSetCollection $fieldSetCollection;
 
     public function __construct(
-        private readonly ContainerInterface $container,
+        private ContainerInterface $container,
+        private string $directory,
     ) {
         /** @var EntityRepository $fieldSetRepository */
         $fieldSetRepository = $this->container->get('custom_field_set.repository');
@@ -39,7 +40,7 @@ final class CustomFieldInstaller implements InstallerInterface
         $this->fieldSetRepository          = $fieldSetRepository;
         $this->fieldRepository             = $fieldRepository;
         $this->fieldSetExistsStateInjector = new FieldSetExistsStateInjector($this->fieldSetRepository);
-        $this->fieldSetCollection          = CustomFieldSetCollectionFactory::create($this->container);
+        $this->fieldSetCollection          = CustomFieldSetCollectionFactory::create($this->container, $this->directory);
     }
 
     #[\Override]

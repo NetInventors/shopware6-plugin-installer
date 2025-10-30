@@ -19,7 +19,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @psalm-import-type MappingEntry from ImportExportProfileInterface
  * @psalm-type ProfileClass = class-string<ImportExportProfileInterface>
  */
-final class ImportExportProfileInstaller implements InstallerInterface
+final readonly class ImportExportProfileInstaller implements InstallerInterface
 {
     private EntityRepository $profileRepository;
 
@@ -32,7 +32,8 @@ final class ImportExportProfileInstaller implements InstallerInterface
     private ImportExportProfileCollection $profileCollection;
 
     public function __construct(
-        private readonly ContainerInterface $container,
+        private ContainerInterface $container,
+        private string $directory,
     ) {
         /** @var EntityRepository $profileRepository */
         $profileRepository = $this->container->get('import_export_profile.repository');
@@ -47,7 +48,7 @@ final class ImportExportProfileInstaller implements InstallerInterface
         $this->profileTranslationRepository = $profileTranslationRepository;
         $this->languageRepository           = $languageRepository;
         $this->profileExistsStateInjector   = new ProfileExistsStateInjector($this->profileRepository);
-        $this->profileCollection            = ImportExportProfileCollectionFactory::create($this->container);
+        $this->profileCollection            = ImportExportProfileCollectionFactory::create($this->container, $this->directory);
 
     }
 

@@ -14,20 +14,21 @@ use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-final class CustomFieldUninstaller implements UninstallerInterface
+final readonly class CustomFieldUninstaller implements UninstallerInterface
 {
     private EntityRepository $fieldSetRepository;
 
     private CustomFieldSetCollection $fieldSetCollection;
 
     public function __construct(
-        private readonly ContainerInterface $container,
+        private ContainerInterface $container,
+        private string $directory,
     ) {
         /** @var EntityRepository $fieldSetRepository */
         $fieldSetRepository = $this->container->get('custom_field_set.repository');
 
         $this->fieldSetRepository = $fieldSetRepository;
-        $this->fieldSetCollection = CustomFieldSetCollectionFactory::create($this->container);
+        $this->fieldSetCollection = CustomFieldSetCollectionFactory::create($this->container, $this->directory);
     }
 
     #[\Override]

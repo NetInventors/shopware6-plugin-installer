@@ -14,9 +14,9 @@ final class ImportExportProfileCollectionFactory
      */
     private static array $cache = [];
 
-    public static function create(ContainerInterface $container): ImportExportProfileCollection
+    public static function create(ContainerInterface $container, string $directory): ImportExportProfileCollection
     {
-        $configurationFile = Path::join(\dirname(__DIR__, 2), 'Resources/config/setup/import-export-profile.php');
+        $configurationFile = Path::join($directory, 'Resources/config/setup/import-export-profile.php');
 
         if (isset(self::$cache[$configurationFile])) {
             return self::$cache[$configurationFile];
@@ -26,7 +26,10 @@ final class ImportExportProfileCollectionFactory
         $importBuilderConfiguration = [];
 
         if (\is_file($configurationFile)) {
-            /** @var list<class-string<ImportExportProfileInterface>> $importBuilderConfiguration */
+            /**
+             * @noinspection UsingInclusionOnceReturnValueInspection
+             * @var list<class-string<ImportExportProfileInterface>> $importBuilderConfiguration
+             */
             $importBuilderConfiguration = (array) require_once $configurationFile;
         }
 

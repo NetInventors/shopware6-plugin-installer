@@ -8,17 +8,20 @@ use NetInventors\Shopware6PluginInstaller\UpdaterInterface;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-final class CustomFieldUpdater implements UpdaterInterface
+final readonly class CustomFieldUpdater implements UpdaterInterface
 {
     public function __construct(
-        private readonly ContainerInterface $container,
+        private ContainerInterface $container,
+        private string $directory,
     ) {
     }
 
     #[\Override]
     public function update(UpdateContext $updateContext): void
     {
-        (new CustomFieldInstaller($this->container))->install($updateContext);
+        $customFieldInstaller = new CustomFieldInstaller($this->container, $this->directory);
+
+        $customFieldInstaller->install($updateContext);
     }
 
     #[\Override]

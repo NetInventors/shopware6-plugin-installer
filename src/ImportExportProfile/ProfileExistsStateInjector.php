@@ -33,7 +33,6 @@ final readonly class ProfileExistsStateInjector
 
         /** @var ImportExportProfileEntity $importExportProfileEntity */
         foreach ($profileEntities as $importExportProfileEntity) {
-            /** @psalm-suppress DeprecatedMethod - technicalName will not be nullable anymore in SW 6.7 */
             $technicalName = $importExportProfileEntity->getTechnicalName();
 
             if (null === $technicalName) {
