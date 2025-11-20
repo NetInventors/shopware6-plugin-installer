@@ -183,7 +183,7 @@ class ExamplePlugin extends Plugin
         return $this->uninstaller;
     }
 
-    private function injectAutoloader(string $packageName, string $psr4Prefix): void
+    private function injectAutoloader(string $packageName, string $psr4Prefix, string $path = 'src'): void
     {
         $classLoader = $this->getClassLoader();
 
