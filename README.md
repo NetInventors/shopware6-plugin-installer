@@ -185,48 +185,15 @@ class ExamplePlugin extends Plugin
 
     private function injectAutoloader(string $packageName, string $psr4Prefix): void
     {
-        $psr4Prefixes = $this->getClassLoader()->getPrefixesPsr4();
+        $classLoader = $this->getClassLoader();
 
-        if (isset($psr4Prefixes[$psr4Prefix])) {
+        if (\in_array($psr4Prefix, $classLoader->getPrefixesPsr4(), true)) {
             return;
         }
 
-        $application = new Application();
+        $projectDir = $this->container->getParameter('kernel.project_dir');
 
-        $application->setAutoExit(false);
-
-        $output = new BufferedOutput();
-        $input  = new ArrayInput([
-            'command' => 'show',
-            '-f'      => 'json',
-            'package' => $packageName,
-            '-v',
-        ]);
-
-        if (Command::SUCCESS !== $application->run($input, $output)) {
-            throw new \RuntimeException("Cannot resolve plugin required package \"$packageName\".");
-        }
-
-        $packageInfo = $output->fetch();
-
-        try {
-            $package = (array) $this->getSerializer()->decode($packageInfo, JsonEncoder::FORMAT);
-        } catch (NotEncodableValueException $exception) {
-            throw new NotEncodableValueException(
-                \sprintf('Cannot decode string as JSON: "%s"', $packageInfo),
-                $exception->getCode(),
-                $exception,
-            );
-        }
-
-        /** @var array<string, string> $psr4Autoloaders **/
-        $psr4Autoloaders = (array) ($package['autoload']['psr-4'] ?? []);
-        $pluginPath      = (string) $package['path'];
-        $classLoader     = $this->getClassLoader();
-
-        foreach ($psr4Autoloaders as $namespace => $path) {
-            $classLoader->addPsr4($namespace, Path::join($pluginPath, $path));
-        }
+        $classLoader->addPsr4($psr4Prefix, Path::join($projectDir, 'vendor', $packageName, $path));
     }
 
     private function getClassLoader(): ClassLoader
