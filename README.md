@@ -191,9 +191,12 @@ class ExamplePlugin extends Plugin
             return;
         }
 
-        $projectDir = $this->container->getParameter('kernel.project_dir');
-
-        $classLoader->addPsr4($psr4Prefix, Path::join($projectDir, 'vendor', $packageName, $path));
+        $classLoader->addPsr4($psr4Prefix, Path::join(
+            $this->getContainer()->getParameter('kernel.project_dir'),
+            'vendor',
+            $packageName,
+            $path,
+        ));
     }
 
     private function getClassLoader(): ClassLoader
