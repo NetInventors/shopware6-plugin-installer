@@ -112,7 +112,7 @@ final readonly class MailSendingFlowSequence implements FlowSequenceInterface
     }
 
     /**
-     * @return list<string>
+     * @return list<string|array<string, string>>
      */
     private function getDocumentTypeIds(Context $context): array
     {

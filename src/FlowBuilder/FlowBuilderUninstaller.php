@@ -130,9 +130,9 @@ final readonly class FlowBuilderUninstaller implements UninstallerInterface
     }
 
     /**
-     * @param list<string> $actionNames
+     * @param non-empty-array<string, string> $actionNames
      *
-     * @return list<string>|list<array<string, string>>
+     * @return list<string|array<string, string>>
      */
     private function removeSequencesAndGetFlowIdsForRemoval(array $actionNames, Context $context): array
     {

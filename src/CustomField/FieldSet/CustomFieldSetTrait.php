@@ -8,6 +8,9 @@ trait CustomFieldSetTrait
 {
     protected string|null $id = null;
 
+    /** @var list<string>|null */
+    protected array|null $relatedEntitiesOverride = null;
+
     #[\Override]
     public function setId(string $id): void
     {
@@ -19,9 +22,6 @@ trait CustomFieldSetTrait
     {
         return $this->id;
     }
-
-    /** @var list<string>|null */
-    protected array|null $relatedEntitiesOverride = null;
 
     /**
      * @param list<string> $entities

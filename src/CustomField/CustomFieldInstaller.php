@@ -66,11 +66,11 @@ final readonly class CustomFieldInstaller implements InstallerInterface
             }
 
             $setPayLoad = [
-                'id'        => $setId,
-                'name'      => $set::getName(),
-                'active'    => $set->isActive(),
-                'global'    => $set->isGlobal(),
-                'config'    => [
+                'id'     => $setId,
+                'name'   => $set::getName(),
+                'active' => $set->isActive(),
+                'global' => $set->isGlobal(),
+                'config' => [
                     'label'      => $set->getLabels(),
                     'translated' => $set->isTranslated(),
                 ],

@@ -1,6 +1,8 @@
 {
   "require-dev": {
     "php": ">=8.2",
-    "vimeo/psalm": "^6.8.7"
+    "netinventors/shopware6-psalm-plugins": "^7.0.1",
+    "netinventors/shopware6-psalm-stubs": "^7.0.2",
+    "vimeo/psalm": "^6.12.0"
   }
 }

@@ -33,13 +33,12 @@ final readonly class ProfileExistsStateInjector
 
         /** @var ImportExportProfileEntity $importExportProfileEntity */
         foreach ($profileEntities as $importExportProfileEntity) {
-            $technicalName = $importExportProfileEntity->getTechnicalName();
+            $technicalName      = $importExportProfileEntity->getTechnicalName();
+            $installableProfile = $installableProfiles->get($technicalName);
 
-            if (null === $technicalName) {
+            if (null === $installableProfile) {
                 continue;
             }
-
-            $installableProfile = $installableProfiles->get($technicalName);
 
             $installableProfile->setId($importExportProfileEntity->getId());
         }

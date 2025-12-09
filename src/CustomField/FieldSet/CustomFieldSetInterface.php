@@ -10,7 +10,7 @@ interface CustomFieldSetInterface
 {
     public static function getName(): string;
 
-    /** @return array{de-DE:string, en-GB:string} */
+    /** @return array{de-DE: string, en-GB: string} */
     public function getLabels(): array;
 
     public function isTranslated(): bool;

@@ -17,10 +17,6 @@
         </ignoreFiles>
     </projectFiles>
 
-    <stubs>
-        <file name="./stubs/shopware/core/Framework/DataAbstractionLayer/Search/EntitySearchResult.stub.php" />
-    </stubs>
-
     <forbiddenFunctions>
         <function name="dd" />
         <function name="die" />
@@ -31,6 +27,19 @@
     </forbiddenFunctions>
 
     <issueHandlers>
+        <!-- Workaroud due to double instantiated autoloader (https://youtrack.jetbrains.com/issue/WI-57977#focus=Comments-27-4635845.0-0) -->
+        <DuplicateClass errorLevel="suppress" />
+
+        <DeprecatedMethod errorLevel="info" />
+        <DeprecatedProperty errorLevel="info" />
+        <DeprecatedFunction errorLevel="info" />
+
         <MissingClassConstType errorLevel="suppress" />
     </issueHandlers>
+
+    <plugins>
+        <pluginClass class="NetInventors\Shopware6PsalmPlugins\MigrationUpdateDestructiveChecker\MigrationUpdateDestructiveChecker"/>
+        <pluginClass class="NetInventors\Shopware6PsalmPlugins\RequireOnceEnforcer\RequireOnceEnforcer"/>
+        <pluginClass class="NetInventors\Shopware6PsalmStubs\Stubs" />
+    </plugins>
 </psalm>
