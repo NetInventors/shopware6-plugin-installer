@@ -6,6 +6,7 @@ namespace NetInventors\Shopware6PluginInstaller\CustomField;
 
 use NetInventors\Shopware6PluginInstaller\CustomField\FieldSet\CustomFieldSetCollection;
 use NetInventors\Shopware6PluginInstaller\CustomField\FieldSet\CustomFieldSetInterface;
+use NetInventors\Shopware6PluginInstaller\CustomField\Field\CustomFieldInterface;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -16,9 +17,21 @@ use Shopware\Core\System\CustomField\CustomFieldCollection;
 
 final readonly class FieldSetExistsStateInjector
 {
+    /** @var \WeakMap<CustomFieldSetInterface, list<CustomFieldInterface>> */
+    private \WeakMap $initializedFields;
+
     public function __construct(
         private EntityRepository $fieldSetRepository,
     ) {
+        $this->initializedFields = new \WeakMap();
+    }
+
+    /**
+     * @return list<CustomFieldInterface>
+     */
+    public function getInitializedFields(CustomFieldSetInterface $set): array
+    {
+        return $this->initializedFields[$set] ?? $set->getFields();
     }
 
     public function injectFieldSetExistsState(
@@ -52,6 +65,9 @@ final readonly class FieldSetExistsStateInjector
 
             $customFields = $customFieldSet->getCustomFields();
 
+            $installableFields = $installableFieldSet->getFields();
+            $this->initializedFields[$installableFieldSet] = $installableFields;
+
             if (!$customFields instanceof CustomFieldCollection) {
                 continue;
             }
@@ -59,7 +75,7 @@ final readonly class FieldSetExistsStateInjector
             foreach ($customFields as $customFieldEntity) {
                 $dbFieldName = $customFieldEntity->getName();
 
-                foreach ($installableFieldSet->getFields() as $installableField) {
+                foreach ($installableFields as $installableField) {
                     if ($installableField->getName() === $dbFieldName) {
                         $installableField->setId($customFieldEntity->getId());
                     }
