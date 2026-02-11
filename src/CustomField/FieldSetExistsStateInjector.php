@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace NetInventors\Shopware6PluginInstaller\CustomField;
 
+use NetInventors\Shopware6PluginInstaller\CustomField\Field\CustomFieldInterface;
 use NetInventors\Shopware6PluginInstaller\CustomField\FieldSet\CustomFieldSetCollection;
 use NetInventors\Shopware6PluginInstaller\CustomField\FieldSet\CustomFieldSetInterface;
-use NetInventors\Shopware6PluginInstaller\CustomField\Field\CustomFieldInterface;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -17,33 +17,26 @@ use Shopware\Core\System\CustomField\CustomFieldCollection;
 
 final readonly class FieldSetExistsStateInjector
 {
-    /** @var \WeakMap<CustomFieldSetInterface, list<CustomFieldInterface>> */
-    private \WeakMap $initializedFields;
-
     public function __construct(
         private EntityRepository $fieldSetRepository,
     ) {
-        $this->initializedFields = new \WeakMap();
     }
 
     /**
-     * @return list<CustomFieldInterface>
+     * @return \WeakMap<CustomFieldSetInterface, list<CustomFieldInterface>>
      */
-    public function getInitializedFields(CustomFieldSetInterface $set): array
-    {
-        return $this->initializedFields[$set] ?? $set->getFields();
-    }
-
     public function injectFieldSetExistsState(
         CustomFieldSetCollection $installableFieldSets,
         Context $context,
-    ): CustomFieldSetCollection {
+    ): \WeakMap {
+        /** @var \WeakMap<CustomFieldSetInterface, list<CustomFieldInterface>> $fieldsBySet */
+        $fieldsBySet = new \WeakMap();
+
         if (0 === $installableFieldSets->count()) {
-            return $installableFieldSets;
+            return $fieldsBySet;
         }
 
         $criteria = new Criteria();
-
         $criteria->addFilter(new EqualsAnyFilter('name', $installableFieldSets->getSetNames()));
         $criteria->addAssociation('customFields');
         $criteria->addAssociation('relations');
@@ -63,10 +56,11 @@ final readonly class FieldSetExistsStateInjector
 
             $installableFieldSet->setId($customFieldSet->getId());
 
-            $customFields = $customFieldSet->getCustomFields();
-
             $installableFields = $installableFieldSet->getFields();
-            $this->initializedFields[$installableFieldSet] = $installableFields;
+
+            $fieldsBySet[$installableFieldSet] = $installableFields;
+
+            $customFields = $customFieldSet->getCustomFields();
 
             if (!$customFields instanceof CustomFieldCollection) {
                 continue;
@@ -100,9 +94,9 @@ final readonly class FieldSetExistsStateInjector
                 }
             }
 
-            $installableFieldSet->setRelatedEntities(array_keys($relationsToInstall));
+            $installableFieldSet->setRelatedEntities(\array_keys($relationsToInstall));
         }
 
-        return $installableFieldSets;
+        return $fieldsBySet;
     }
 }
