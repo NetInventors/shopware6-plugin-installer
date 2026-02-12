@@ -51,12 +51,12 @@ final readonly class CustomFieldInstaller implements InstallerInterface
         $fieldSetPayLoads = [];
         $fieldPayloads    = [];
 
-        $installableFieldSets = $this->fieldSetExistsStateInjector->injectFieldSetExistsState(
+        $initializedFieldsMap = $this->fieldSetExistsStateInjector->injectFieldSetExistsState(
             $this->fieldSetCollection,
             $context,
         );
 
-        foreach ($installableFieldSets as $set) {
+        foreach ($this->fieldSetCollection as $set) {
             $setId = $set->getId() ?? Uuid::randomHex();
 
             $relations = [];
@@ -80,7 +80,10 @@ final readonly class CustomFieldInstaller implements InstallerInterface
                 $setPayLoad['relations'] = $relations;
             }
 
-            foreach ($set->getFields() as $field) {
+            /** @var list<CustomFieldInterface> $fields */
+            $fields = $initializedFieldsMap[$set] ?? $set->getFields();
+
+            foreach ($fields as $field) {
                 $fieldPayloads[] = [
                     'id'                 => $field->getId() ?? Uuid::randomHex(),
                     'name'               => $field->getName(),

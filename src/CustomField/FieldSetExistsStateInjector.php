@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace NetInventors\Shopware6PluginInstaller\CustomField;
 
+use NetInventors\Shopware6PluginInstaller\CustomField\Field\CustomFieldInterface;
 use NetInventors\Shopware6PluginInstaller\CustomField\FieldSet\CustomFieldSetCollection;
 use NetInventors\Shopware6PluginInstaller\CustomField\FieldSet\CustomFieldSetInterface;
 use Shopware\Core\Framework\Context;
@@ -21,16 +22,21 @@ final readonly class FieldSetExistsStateInjector
     ) {
     }
 
+    /**
+     * @return \WeakMap<CustomFieldSetInterface, list<CustomFieldInterface>>
+     */
     public function injectFieldSetExistsState(
         CustomFieldSetCollection $installableFieldSets,
         Context $context,
-    ): CustomFieldSetCollection {
+    ): \WeakMap {
+        /** @var \WeakMap<CustomFieldSetInterface, list<CustomFieldInterface>> $fieldsBySet */
+        $fieldsBySet = new \WeakMap();
+
         if (0 === $installableFieldSets->count()) {
-            return $installableFieldSets;
+            return $fieldsBySet;
         }
 
         $criteria = new Criteria();
-
         $criteria->addFilter(new EqualsAnyFilter('name', $installableFieldSets->getSetNames()));
         $criteria->addAssociation('customFields');
         $criteria->addAssociation('relations');
@@ -50,6 +56,10 @@ final readonly class FieldSetExistsStateInjector
 
             $installableFieldSet->setId($customFieldSet->getId());
 
+            $installableFields = $installableFieldSet->getFields();
+
+            $fieldsBySet[$installableFieldSet] = $installableFields;
+
             $customFields = $customFieldSet->getCustomFields();
 
             if (!$customFields instanceof CustomFieldCollection) {
@@ -59,7 +69,7 @@ final readonly class FieldSetExistsStateInjector
             foreach ($customFields as $customFieldEntity) {
                 $dbFieldName = $customFieldEntity->getName();
 
-                foreach ($installableFieldSet->getFields() as $installableField) {
+                foreach ($installableFields as $installableField) {
                     if ($installableField->getName() === $dbFieldName) {
                         $installableField->setId($customFieldEntity->getId());
                     }
@@ -84,9 +94,9 @@ final readonly class FieldSetExistsStateInjector
                 }
             }
 
-            $installableFieldSet->setRelatedEntities(array_keys($relationsToInstall));
+            $installableFieldSet->setRelatedEntities(\array_keys($relationsToInstall));
         }
 
-        return $installableFieldSets;
+        return $fieldsBySet;
     }
 }
