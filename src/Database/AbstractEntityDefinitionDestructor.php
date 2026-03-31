@@ -12,7 +12,9 @@ abstract class AbstractEntityDefinitionDestructor implements EntityDefinitionDes
     {
         $table = $this->getEntityDefinition()->getEntityName();
 
-        $connection->executeStatement("DROP TABLE IF EXISTS $table");
+        $connection->executeStatement(
+            'DROP TABLE IF EXISTS ' . $connection->getDatabasePlatform()->quoteSingleIdentifier($table)
+        );
     }
 
     public function getDependencies(): array

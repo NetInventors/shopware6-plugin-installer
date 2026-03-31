@@ -81,6 +81,8 @@ class DatabaseUninstaller implements UninstallerInterface
         $done   = [];
 
         while (\count($destructors) > \count($sorted)) {
+            $countBefore = \count($sorted);
+
             foreach ($destructors as $destructorClass => $destructor) {
                 if (isset($done[$destructorClass])) {
                     continue;
@@ -101,6 +103,12 @@ class DatabaseUninstaller implements UninstallerInterface
                     $done[$destructorClass]   = true;
                     $sorted[$destructorClass] = $destructor;
                 }
+            }
+
+            if (\count($sorted) === $countBefore) {
+                $cycle = \implode(', ', \array_keys(\array_diff_key($destructors, $sorted)));
+
+                throw new \RuntimeException("Circular dependency detected among entity destructors: $cycle");
             }
         }
 
