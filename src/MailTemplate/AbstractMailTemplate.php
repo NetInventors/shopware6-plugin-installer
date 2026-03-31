@@ -79,7 +79,7 @@ abstract class AbstractMailTemplate implements MailTemplateInterface
     public function findTemplateResourceForLocaleByFormat(
         string $locale,
         TemplateFileFormatEnum $format,
-        string $resourceLocation = null,
+        string|null $resourceLocation = null,
     ): SplFileInfo|null {
         $finder = (new Finder())
             ->in($resourceLocation ?? $this->getResourceLocation())
