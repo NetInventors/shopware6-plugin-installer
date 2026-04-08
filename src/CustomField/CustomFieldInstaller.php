@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace NetInventors\Shopware6PluginInstaller\CustomField;
 
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ArrayParameterType;
+use Doctrine\DBAL\Exception;
 use NetInventors\Shopware6PluginInstaller\CustomField\Field\CustomFieldInterface;
 use NetInventors\Shopware6PluginInstaller\CustomField\FieldSet\CustomFieldSetCollection;
 use NetInventors\Shopware6PluginInstaller\CustomField\FieldSet\CustomFieldSetCollectionFactory;
@@ -19,6 +22,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 final readonly class CustomFieldInstaller implements InstallerInterface
 {
+    private Connection $connection;
+
     private EntityRepository $fieldSetRepository;
 
     private EntityRepository $fieldRepository;
@@ -31,6 +36,9 @@ final readonly class CustomFieldInstaller implements InstallerInterface
         private ContainerInterface $container,
         private string $directory,
     ) {
+        /** @var Connection $fieldSetRepository */
+        $this->connection = $this->container->get(Connection::class);
+
         /** @var EntityRepository $fieldSetRepository */
         $fieldSetRepository = $this->container->get('custom_field_set.repository');
 
@@ -43,6 +51,9 @@ final readonly class CustomFieldInstaller implements InstallerInterface
         $this->fieldSetCollection          = CustomFieldSetCollectionFactory::create($this->container, $this->directory);
     }
 
+    /**
+     * @throws Exception
+     */
     #[\Override]
     public function install(InstallContext $installContext): void
     {
@@ -50,6 +61,9 @@ final readonly class CustomFieldInstaller implements InstallerInterface
 
         $fieldSetPayLoads = [];
         $fieldPayloads    = [];
+
+        /** @var list<CustomFieldInterface> $existingFields */
+        $existingFields   = [];
 
         $initializedFieldsMap = $this->fieldSetExistsStateInjector->injectFieldSetExistsState(
             $this->fieldSetCollection,
@@ -84,8 +98,14 @@ final readonly class CustomFieldInstaller implements InstallerInterface
             $fields = $initializedFieldsMap[$set] ?? $set->getFields();
 
             foreach ($fields as $field) {
+                $fieldId = $field->getId();
+
+                if (null !== $fieldId) {
+                    $existingFields[] = $field;
+                }
+
                 $fieldPayloads[] = [
-                    'id'                 => $field->getId() ?? Uuid::randomHex(),
+                    'id'                 => $fieldId ?? Uuid::randomHex(),
                     'name'               => $field->getName(),
                     'type'               => $field->getType(),
                     'config'             => $field->getConfig(),
@@ -99,6 +119,8 @@ final readonly class CustomFieldInstaller implements InstallerInterface
 
             $fieldSetPayLoads[] = $setPayLoad;
         }
+
+        $this->syncChangedFieldTypes($existingFields);
 
         if ([] !== $fieldSetPayLoads) {
             $this->fieldSetRepository->upsert($fieldSetPayLoads, $context);
@@ -117,5 +139,91 @@ final readonly class CustomFieldInstaller implements InstallerInterface
     #[\Override]
     public function activate(ActivateContext $activateContext): void
     {
+    }
+
+    /**
+     * @param list<CustomFieldInterface> $existingFields
+     * @throws Exception
+     */
+    private function syncChangedFieldTypes(array $existingFields): void
+    {
+        if ([] === $existingFields) {
+            return;
+        }
+
+        $bytesIds = [];
+
+        foreach ($existingFields as $field) {
+            $id = $field->getId();
+
+            if (null !== $id) {
+                $bytesIds[] = Uuid::fromHexToBytes($id);
+            }
+        }
+
+        if ([] === $bytesIds) {
+            return;
+        }
+
+        $dbTypes = $this->connection->executeQuery(
+            'SELECT LOWER(HEX(id)), type FROM custom_field WHERE id IN (:ids)',
+            ['ids' => $bytesIds],
+            ['ids' => ArrayParameterType::STRING],
+        )->fetchAllKeyValue();
+
+        /** @var list<array{id: string, type: string}> $updates */
+        $updates = [];
+
+        foreach ($existingFields as $field) {
+            $id = $field->getId();
+
+            if (null === $id) {
+                continue;
+            }
+
+            /** @var string|null $dbType */
+            $dbType = $dbTypes[$id] ?? null;
+
+            if (null !== $dbType && $dbType !== $field->getType()) {
+                $updates[] = [
+                    'id'   => $id,
+                    'type' => $field->getType(),
+                ];
+            }
+        }
+
+        if ([] === $updates) {
+            return;
+        }
+
+        $queryBuilder = $this->connection->createQueryBuilder();
+        $queryBuilder->update('custom_field');
+
+        $caseParts  = [];
+        $parameters = [];
+        $types      = [];
+        $updateIds  = [];
+
+        foreach ($updates as $i => $update) {
+            $idParam   = 'id_' . $i;
+            $typeParam = 'type_' . $i;
+
+            $caseParts[] = \sprintf('WHEN :%s THEN :%s', $idParam, $typeParam);
+
+            $parameters[$idParam]   = Uuid::fromHexToBytes($update['id']);
+            $parameters[$typeParam] = $update['type'];
+
+            $updateIds[] = Uuid::fromHexToBytes($update['id']);
+        }
+
+        $caseSql = \sprintf('(CASE id %s END)', \implode(' ', $caseParts));
+        $queryBuilder->set('type', $caseSql);
+
+        $queryBuilder->where('id IN (:updateIds)');
+        $parameters['updateIds'] = $updateIds;
+        $types['updateIds']      = ArrayParameterType::STRING;
+
+        $queryBuilder->setParameters($parameters, $types);
+        $queryBuilder->executeStatement();
     }
 }
